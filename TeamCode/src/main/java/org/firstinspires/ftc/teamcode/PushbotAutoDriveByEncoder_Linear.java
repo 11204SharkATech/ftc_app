@@ -68,13 +68,13 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Pushbot: Auto Drive By Encoder", group="Pushbot")
+@Autonomous(name="Fred: Auto Drive By Encoder", group="Pushbot")
 //@Disabled
 public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
-    DcMotor right_drive;// Use a Pushbot's hardware
-    DcMotor left_drive;
+    DcMotor right;// Use a Pushbot's hardware
+    DcMotor left;
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
@@ -92,26 +92,26 @@ public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
-        left_drive = hardwareMap.dcMotor.get("left_drive");
-        right_drive = hardwareMap.dcMotor.get("right_drive");
+        left = hardwareMap.dcMotor.get("left");
+        right = hardwareMap.dcMotor.get("right");
 
-        right_drive.setDirection(DcMotorSimple.Direction.REVERSE);;
+        right.setDirection(DcMotorSimple.Direction.REVERSE);;
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
-        left_drive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        right_drive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         idle();
 
-        left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        right_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d",
-                          left_drive.getCurrentPosition(),
-                          right_drive.getCurrentPosition());
+                          left.getCurrentPosition(),
+                          right.getCurrentPosition());
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -120,8 +120,8 @@ public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        encoderDrive(TURN_SPEED,   40, -40, 4.0);  // S2: Turn Right 40 Inches with 4 Sec timeout
+        encoderDrive(TURN_SPEED, -60, 60, 4.0);  // S3: Turn Left 60 Inches with 4 Sec timeout
 
         //robot.leftClaw.setPosition(1.0);            // S4: Stop and close the claw.
         //robot.rightClaw.setPosition(0.0);
@@ -149,40 +149,40 @@ public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = left_drive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = right_drive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            left_drive.setTargetPosition(newLeftTarget);
-            right_drive.setTargetPosition(newRightTarget);
+            newLeftTarget = left.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget = right.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            left.setTargetPosition(newLeftTarget);
+            right.setTargetPosition(newRightTarget);
 
             // Turn On RUN_TO_POSITION
-            left_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            right_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
-            left_drive.setPower(Math.abs(speed));
-            right_drive.setPower(Math.abs(speed));
+            left.setPower(Math.abs(speed));
+            right.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             while (opModeIsActive() &&
                    (runtime.seconds() < timeoutS) &&
-                   (left_drive.isBusy() && right_drive.isBusy())) {
+                   (left.isBusy() && right.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
                 telemetry.addData("Path2",  "Running at %7d :%7d",
-                                            left_drive.getCurrentPosition(),
-                                            right_drive.getCurrentPosition());
+                                            left.getCurrentPosition(),
+                                            right.getCurrentPosition());
                 telemetry.update();
             }
 
             // Stop all motion;
-            left_drive.setPower(0);
-            right_drive.setPower(0);
+            left.setPower(0);
+            right.setPower(0);
 
             // Turn off RUN_TO_POSITION
-            left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            right_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             //  sleep(250);   // optional pause after each move
         }
